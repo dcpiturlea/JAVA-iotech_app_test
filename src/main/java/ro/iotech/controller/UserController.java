@@ -3,6 +3,7 @@ package ro.iotech.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import ro.iotech.Model.User.UserService;
@@ -46,16 +47,16 @@ public class UserController {
         return new ModelAndView("register");
     }
 
-    @GetMapping("/login")
+
+    @PostMapping("/login")
     public ModelAndView login(@RequestParam("email") String email,
                               @RequestParam("password") String password
                               ) {
         ModelAndView modelAndView = new ModelAndView("login");
-
         try {
             userService.loginUser(email, password);
             modelAndView.addObject("message", "");
-            modelAndView = new ModelAndView("users_page/indexuser");
+            modelAndView = new ModelAndView("redirect:/users_page/indexuser");
         } catch (ExistUserException existUserException) {
             String messageException = existUserException.getMessage();
             modelAndView.addObject("message", messageException);
@@ -64,12 +65,12 @@ public class UserController {
         return modelAndView;
     }
 
-    @GetMapping("users_page/indexuser")
+    @GetMapping("/users_page/indexuser")
     public ModelAndView dashboard() {
         if (userSession.getUserId() == 0) {
-            return new ModelAndView("redirect:index.html");
+            return new ModelAndView("redirect:/login.html");
         }
         //verific daca user-ul este logat sau nu
-        return new ModelAndView("dashboard");
+        return new ModelAndView("/users_page/indexuser.html");
     }
 }
