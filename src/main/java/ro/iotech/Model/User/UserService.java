@@ -1,6 +1,7 @@
 package ro.iotech.Model.User;
 
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.iotech.database.UserDAO;
@@ -19,8 +20,6 @@ public class UserService {
     @Autowired
     UserDAO userDAO;
 
-    @Autowired
-    UserService userService;
 
     @Autowired
     UserSession userSession;
@@ -78,8 +77,9 @@ public class UserService {
         Date date = new Date();
         String createAccountDate=dateFormat.format(date);
 
-
-        userDAO.saveNewUser(email, phone, createAccountDate, password);
+        //folosim functia md5 pentru a 'cripta' parola
+        String passwordMD5 = DigestUtils.md5Hex(password);
+        userDAO.saveNewUser(email, phone, createAccountDate, passwordMD5);
     }
 
     public List<User> findByEmail(String email) {
@@ -87,6 +87,7 @@ public class UserService {
     }
 
     public void loginUser(String email, String password) throws ExistUserException {
+         password=DigestUtils.md5Hex(password);
         List<User> userList = userDAO.findByEmailAndPassword(email, password);
         if (userList.size() == 0) {
             throw new ExistUserException("Credentialele nu sunt corecte!");
@@ -100,9 +101,13 @@ public class UserService {
                 throw new ExistUserException("Credentialele nu sunt corecte!");
             } else {
                 userSession.setUserId(userFromDatabase.getId());
+                userSession.setEmail(email);
             }
         }
+    }
 
+    public int getUserId(String email){
 
+        return userDAO.getUserId(email);
     }
 }

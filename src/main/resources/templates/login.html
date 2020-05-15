@@ -15,11 +15,14 @@
     <script src="js\main.js"></script>
 
     <script th:inline="javascript">
+        function loginError() {
         var message= [[${message}]];
-        function errorLogin() {
-        var alertMessage= String(message);
-        alert(alertMessage);
+        if(message==""||message==null){
+         window.onload = loginError;
         }
+         else{   alert(message);}
+        }
+
     </script>
 
 </head>

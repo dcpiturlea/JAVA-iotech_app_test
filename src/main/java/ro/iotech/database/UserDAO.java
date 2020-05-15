@@ -29,4 +29,9 @@ public class UserDAO {
     public List<User> findByEmailAndPassword(String email, String password) {
         return jdbcTemplate.query("select * from users where email='" + email + "' and parola='"+password+"';", new UserRowMapper());
     }
+
+    public int getUserId(String email){
+        int userId=jdbcTemplate.update("select ID from users where email='"+email+"'");
+        return userId;
+    }
 }

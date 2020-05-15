@@ -83,7 +83,7 @@
             <input type="password"  id="password1"  oninput="setPasswordConfirmValidity();" class="fadeIn second" name="password" placeholder="parola" required pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"
                    title="Parola trebuie sa contina minim opt caractere, minim o litera mica, una mare, o cifra/un caracter special">
             <input type="password" id="password2" oninput="setPasswordConfirmValidity();" class="fadeIn third" name="password2" placeholder="confirmare parola">
-            <input  type="submit" class="fadeIn fourth" value="Inregistrare" style="">
+            <input type="submit" class="fadeIn fourth" value="Inregistrare" style="">
             <p th:text="${message}" class="formErrorMessage"></p>
         </form>
 

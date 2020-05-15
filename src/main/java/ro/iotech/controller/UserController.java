@@ -17,8 +17,6 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-    UserSession userSession;
 
     //CE TREBUIE SA FACEM AICI???
     // - daca parolele sunt identice
@@ -28,10 +26,13 @@ public class UserController {
                                        @RequestParam("password") String password,
                                        @RequestParam("password2") String password2) {
         ModelAndView modelAndView = new ModelAndView("register");
+        ModelAndView loginTemplate= new ModelAndView("login");
 
         //salvare efectiva in baza de date !!!
         try {
             userService.saveNewUser(email, phone, password, password2);
+            loginTemplate.addObject("message", "Contul a fost creat cu succes, va puteti loga!");
+
         } catch (InvalidPasswordException invalidPassword) {
             String messageException = invalidPassword.getMessage();
             modelAndView.addObject("message", messageException);
@@ -39,7 +40,7 @@ public class UserController {
         }
 
         //redirectionam user-ul catre pagina pagina de login daca este totul ok
-        return new ModelAndView("redirect:/login.html");
+        return loginTemplate;
     }
 
     @GetMapping("/register")
@@ -47,16 +48,17 @@ public class UserController {
         return new ModelAndView("register");
     }
 
-
     @PostMapping("/login")
     public ModelAndView login(@RequestParam("email") String email,
                               @RequestParam("password") String password
                               ) {
         ModelAndView modelAndView = new ModelAndView("login");
+
         try {
             userService.loginUser(email, password);
+
             modelAndView.addObject("message", "");
-            modelAndView = new ModelAndView("redirect:/users_page/indexuser");
+            modelAndView = new ModelAndView("redirect:/user_main_page");
         } catch (ExistUserException existUserException) {
             String messageException = existUserException.getMessage();
             modelAndView.addObject("message", messageException);
@@ -65,12 +67,5 @@ public class UserController {
         return modelAndView;
     }
 
-    @GetMapping("/users_page/indexuser")
-    public ModelAndView dashboard() {
-        if (userSession.getUserId() == 0) {
-            return new ModelAndView("redirect:/login.html");
-        }
-        //verific daca user-ul este logat sau nu
-        return new ModelAndView("/users_page/indexuser.html");
-    }
+
 }

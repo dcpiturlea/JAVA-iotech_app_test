@@ -1,5 +1,8 @@
 package ro.iotech.Model.User;
 
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
+
 public class User {
 
     private int id;
